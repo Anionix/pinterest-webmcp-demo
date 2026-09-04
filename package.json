@@ -1,0 +1,15 @@
+{
+  "name": "pinterest-webmcp-demo",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A stateless WebMCP demo that prepares Pinterest idea-search links.",
+  "type": "module",
+  "scripts": {
+    "check": "node --test",
+    "test": "node --test"
+  },
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  }
+}
