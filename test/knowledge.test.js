@@ -258,7 +258,18 @@ test('machine evidence is a continuous chronological chain of observations', () 
   const eventIds = new Set();
 
   transitions.forEach((entry, index) => {
-    assert.deepEqual(Object.keys(entry).sort(), requiredKeys);
+    for (const key of requiredKeys) {
+      assert.ok(
+        Object.hasOwn(entry, key),
+        `transition ${entry.sequence} needs ${key}`,
+      );
+    }
+    assert.deepEqual(
+      Object.keys(entry)
+        .filter((key) => !requiredKeys.includes(key))
+        .sort(),
+      entry.sequence >= 8 ? ['measurement'] : [],
+    );
     assert.equal(entry.sequence, index + 1);
     assert.match(entry.occurred_at, ISO_INSTANT);
     assert.match(entry.event_uuid_v7, UUID_V7);
@@ -285,6 +296,91 @@ test('machine evidence is a continuous chronological chain of observations', () 
       assert.equal(entry.from_state, previous.to_state);
     }
   });
+});
+
+test('hosted preview evidence preserves exact readbacks and production boundary', () => {
+  const repository = transitions.find((entry) => entry.sequence === 8);
+  const deployment = transitions.find((entry) => entry.sequence === 9);
+  const webMcp = transitions.find((entry) => entry.sequence === 10);
+  const form = transitions.find((entry) => entry.sequence === 11);
+
+  assert.deepEqual(
+    {
+      repository: repository?.measurement?.repository,
+      visibility: repository?.measurement?.visibility,
+      branch: repository?.measurement?.branch,
+      commit_sha: repository?.measurement?.commit_sha,
+      workflow_run_url: repository?.measurement?.workflow_run_url,
+      node_20: repository?.measurement?.node_20,
+      node_24: repository?.measurement?.node_24,
+    },
+    {
+      repository: 'https://github.com/Anionix/pinterest-webmcp-demo',
+      visibility: 'public',
+      branch: 'main',
+      commit_sha: 'e2df22aa36b3014b7ae88fe7dc46c97809469c11',
+      workflow_run_url:
+        'https://github.com/Anionix/pinterest-webmcp-demo/actions/runs/33857262567',
+      node_20: 'success',
+      node_24: 'success',
+    },
+  );
+  assert.deepEqual(
+    {
+      environment: deployment?.measurement?.environment,
+      status: deployment?.measurement?.status,
+      response_status: deployment?.measurement?.response_status,
+      content_security_policy:
+        deployment?.measurement?.content_security_policy,
+      referrer_policy: deployment?.measurement?.referrer_policy,
+      content_type_options: deployment?.measurement?.content_type_options,
+      production_promoted: deployment?.measurement?.production_promoted,
+    },
+    {
+      environment: 'preview',
+      status: 'READY',
+      response_status: 200,
+      content_security_policy:
+        "default-src 'self'; style-src 'self' 'unsafe-inline'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'",
+      referrer_policy: 'no-referrer',
+      content_type_options: 'nosniff',
+      production_promoted: false,
+    },
+  );
+
+  const deploymentId = deployment?.measurement?.deployment_id;
+  assert.equal(deploymentId, 'dpl_82SHGa4fRxNttNp5moepxLJfrSrv');
+  assert.equal(webMcp?.measurement?.deployment_id, deploymentId);
+  assert.equal(form?.measurement?.deployment_id, deploymentId);
+  assert.equal(webMcp?.measurement?.tool_name, 'prepare_pinterest_idea_search');
+  assert.equal(webMcp?.measurement?.discovered_before_execution, true);
+  assert.deepEqual(webMcp?.measurement?.input, {
+    query: '  水中 bride & prism  ',
+  });
+  const preparedSearch = {
+    query: '水中 bride & prism',
+    url: 'https://www.pinterest.com/search/pins/?q=%E6%B0%B4%E4%B8%AD+bride+%26+prism',
+  };
+  assert.deepEqual(webMcp?.measurement?.returned, preparedSearch);
+  assert.deepEqual(webMcp?.measurement?.visible, preparedSearch);
+  assert.equal(webMcp?.measurement?.reloaded, true);
+  assert.equal(webMcp?.measurement?.rediscovered_after_reload, true);
+  assert.deepEqual(form?.measurement?.invalid_input, {
+    raw: '   ',
+    error: 'Enter an idea to search.',
+    stale_result_cleared: true,
+  });
+  assert.deepEqual(form?.measurement?.valid_input, {
+    raw: '  paper garden shadows  ',
+    normalized: 'paper garden shadows',
+    url: 'https://www.pinterest.com/search/pins/?q=paper+garden+shadows',
+  });
+  assert.equal(form?.measurement?.production_promoted, false);
+  assert.equal(form?.measurement?.production_verification, 'UNMEASURED');
+  assert.equal(
+    transitions.some(({ to_state }) => to_state.startsWith('production_')),
+    false,
+  );
 });
 
 test('the source-recovery UUID version 7 identifies one concrete observation', () => {

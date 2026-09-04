@@ -5,12 +5,16 @@ description: One shared, stateless operation for a human form and an imperative 
 resource: ../../app.js
 tags: [webmcp, static-site, pinterest, machine-contract]
 status: stable
-generated: { by: codex/gpt-5, at: 2026-09-04T09:10:36.551Z }
+generated: { by: codex/gpt-5, at: 2026-09-04T09:20:33.272Z }
 verified:
   - { by: process:node-test, at: 2026-09-04T09:03:42.239Z }
   - { by: codex/gpt-5, at: 2026-09-04T09:03:42.240Z }
   - { by: process:node-test, at: 2026-09-04T09:06:15.735Z }
   - { by: process:node-test, at: 2026-09-04T09:10:36.551Z }
+  - { by: process:github-actions, at: 2026-09-04T09:18:40.160Z }
+  - { by: service:vercel, at: 2026-09-04T09:18:40.161Z }
+  - { by: codex:in-app-browser, at: 2026-09-04T09:18:40.162Z }
+  - { by: codex:in-app-browser, at: 2026-09-04T09:20:33.272Z }
 contract_uuid_v5: 834e99f2-bfae-5e12-ac87-a2df493dd5e3
 sources:
   - id: product-brief
@@ -134,6 +138,10 @@ project identity as its namespace.
 | `d4ab699a-ad52-5afb-9c29-6a943d68062f` | `transition/browser-verified/v1` | `580e44d3-1526-56e4-a563-bb965cd5fc9e` |
 | `d4ab699a-ad52-5afb-9c29-6a943d68062f` | `transition/candidate-verified/v1` | `42015786-d39f-575d-8328-73625cf70672` |
 | `d4ab699a-ad52-5afb-9c29-6a943d68062f` | `transition/final-local-verified/v1` | `0ca0f9e4-db41-5dba-830a-a9f24c3aeea2` |
+| `d4ab699a-ad52-5afb-9c29-6a943d68062f` | `transition/public-repository-verified/v1` | `412246ce-d176-5583-a6fb-a5d349fdcea0` |
+| `d4ab699a-ad52-5afb-9c29-6a943d68062f` | `transition/preview-deployed/v1` | `237e11df-3cb5-5787-9adb-c1f54a02fe9b` |
+| `d4ab699a-ad52-5afb-9c29-6a943d68062f` | `transition/preview-webmcp-verified/v1` | `e0e7a766-db5b-5a53-b45c-679bffbce7b7` |
+| `d4ab699a-ad52-5afb-9c29-6a943d68062f` | `transition/preview-verification-complete/v1` | `7b655f47-c631-52a4-9e43-e297d1d5fd7e` |
 | `d4ab699a-ad52-5afb-9c29-6a943d68062f` | `knowledge-record/v1` | `834e99f2-bfae-5e12-ac87-a2df493dd5e3` |
 
 Actual observations use UUID version 7, not UUID version 5. Each observation
@@ -150,6 +158,7 @@ and evidence in [`../evidence/state-transitions.jsonl`](../evidence/state-transi
 | Registration lifecycle | Tests cover unsupported, ready, synchronous failure, asynchronous failure, cached page hide, final page hide, and explicit disposal. |
 | No hidden side effects | Static tests reject network, storage, automatic navigation, and form-action patterns. |
 | Provenance and identities | `test/knowledge.test.js` recomputes UUID version 5 values and validates the evidence chronology. |
+| Hosted behavior | Sequences 10–11 record real WebMCP discovery, execution, visible-state equality, reload rediscovery, and both ordinary form outcomes on an isolated Vercel preview. |
 
 The architecture uses `index.html` and `app.js` instead of the earlier one-file
 sketch so the operation is importable for deterministic tests without a build
