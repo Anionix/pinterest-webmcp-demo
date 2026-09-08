@@ -229,12 +229,14 @@ export async function mountApp(doc) {
   const onSubmit = (event) => {
     event.preventDefault();
     try {
-      controller.prepare(queryInput.value);
+      controller.prepare(event.currentTarget?.dataset.query ?? queryInput.value);
     } catch {
       // The shared controller already rendered the actionable error.
     }
   };
   form.addEventListener('submit', onSubmit);
+  const examples = doc.querySelectorAll?.('[data-query]') ?? [];
+  for (const example of examples) example.addEventListener('click', onSubmit);
 
   const registration = await registerWebMcpTool({
     modelContext: doc.modelContext,
@@ -258,6 +260,7 @@ export async function mountApp(doc) {
     registration,
     dispose() {
       form.removeEventListener('submit', onSubmit);
+      for (const example of examples) example.removeEventListener('click', onSubmit);
       doc.defaultView?.removeEventListener('pagehide', onPageHide);
       registration.dispose();
     },
