@@ -6,6 +6,8 @@ same operation and see the same result.
 
 Live page: <https://pinterest-webmcp-demo.vercel.app>
 
+ChatGPT Sites: [Pinterest Idea Search](https://pinterest-idea-search.anionix.chatgpt.site/)
+
 ## What it does
 
 The page registers one imperative WebMCP tool:
