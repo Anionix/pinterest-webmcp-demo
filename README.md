@@ -27,7 +27,8 @@ to a project-controlled service.
 
 ## Run locally
 
-No installation or build step is needed. Node.js is used only for tests.
+The static site needs no installation or build step. Node.js runs its tests
+and the optional ChatGPT MCP server.
 
 ```sh
 python3 -m http.server 4173
@@ -69,6 +70,14 @@ Stable identities use UUID version 5. Actual observed transitions use UUID
 version 7 and are recorded in
 [`knowledge/evidence/state-transitions.jsonl`](knowledge/evidence/state-transitions.jsonl).
 The bundle index is [`knowledge/index.md`](knowledge/index.md).
+
+## ChatGPT app and plugin
+
+The site includes Japanese guidance and three one-click search examples.
+The optional [ChatGPT integration](integrations/README.md) shares the same URL
+builder and adds an inline search form. Its dependencies are isolated from the
+static site. The [skill plugin](plugins/pinterest-idea-search/) helps turn ideas
+into search queries using available WebMCP/MCP tools.
 
 ## Primary references
 

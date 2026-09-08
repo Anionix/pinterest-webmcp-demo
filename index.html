@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="ja">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -10,219 +10,88 @@
     <title>Pinterest Idea Search — WebMCP Demo</title>
     <style>
       :root {
+        font: 16px/1.6 system-ui, sans-serif;
         color-scheme: light;
-        --background: #f7f7f5;
-        --surface: #ffffff;
-        --text: #171717;
-        --muted: #676767;
-        --border: #deded9;
+        color: #171717;
+        background: #f7f7f5;
         --accent: #bd081c;
-        --accent-hover: #9f0617;
-        --success: #176b3a;
-        --warning: #805a00;
-        --error: #a11724;
-        font-family:
-          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
-          "Segoe UI", sans-serif;
       }
-
-      * {
-        box-sizing: border-box;
-      }
-
+      * { box-sizing: border-box; }
       body {
         min-height: 100vh;
         margin: 0;
         display: grid;
         place-items: center;
-        background: var(--background);
-        color: var(--text);
       }
-
       main {
-        width: min(42rem, calc(100vw - 2rem));
-        min-width: 0;
-        padding: clamp(1.5rem, 5vw, 3rem) 0;
+        width: min(42rem, calc(100% - 2rem));
+        padding: 2rem 0;
       }
-
       .shell {
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: 1.25rem;
         padding: clamp(1.25rem, 5vw, 2.5rem);
-        box-shadow: 0 1rem 3rem rgb(0 0 0 / 0.06);
+        border: 1px solid #deded9;
+        border-radius: 1.25rem;
+        background: white;
       }
-
       h1 {
         margin: 0;
-        overflow-wrap: anywhere;
         font-size: clamp(2rem, 7vw, 3.5rem);
-        line-height: 0.98;
-        letter-spacing: -0.055em;
+        line-height: 1.05;
+        letter-spacing: -.05em;
       }
-
-      .intro {
-        max-width: 36rem;
-        margin: 1rem 0 2rem;
-        color: var(--muted);
-        font-size: 1rem;
-        line-height: 1.65;
-      }
-
-      form {
-        display: grid;
-        gap: 0.75rem;
-      }
-
-      label {
-        font-size: 0.875rem;
-        font-weight: 700;
-      }
-
+      h1, .result-query { overflow-wrap: anywhere; }
+      .intro { margin: 1rem 0 2rem; }
+      .intro, .hint, .status, footer { color: #676767; }
+      .hint, .status, footer { font-size: .8125rem; }
+      form { display: grid; gap: .75rem; }
+      label { font-size: .875rem; font-weight: 700; }
       .controls {
         display: grid;
         grid-template-columns: minmax(0, 1fr) auto;
-        gap: 0.625rem;
+        gap: .625rem;
       }
-
-      input,
-      button,
-      a {
-        font: inherit;
-      }
-
-      input {
+      input, button, .search-link {
         min-width: 0;
         min-height: 3.25rem;
-        padding: 0.875rem 1rem;
-        color: var(--text);
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: 0.75rem;
-        outline: none;
+        padding: .875rem 1rem;
+        border: 1px solid #deded9;
+        border-radius: .75rem;
+        font: inherit;
       }
-
-      input:focus-visible {
-        border-color: var(--accent);
-        box-shadow: 0 0 0 3px rgb(189 8 28 / 0.14);
-      }
-
-      button,
-      .search-link {
-        min-height: 3.25rem;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        padding: 0.875rem 1.125rem;
-        border: 0;
-        border-radius: 0.75rem;
-        font-weight: 750;
+      input { width: 100%; background: white; color: inherit; }
+      button, .search-link {
+        border-color: transparent;
+        background: var(--accent);
+        color: white;
+        font-weight: 700;
+        text-align: center;
         text-decoration: none;
         cursor: pointer;
       }
-
-      button {
-        color: #ffffff;
-        background: var(--accent);
+      button:hover, .search-link:hover { filter: brightness(.9); }
+      :focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+      .examples { display: flex; flex-wrap: wrap; gap: .5rem; }
+      .examples button {
+        min-height: 2.75rem;
+        padding: .5rem .8rem;
+        background: #f2efeb;
+        color: #171717;
+        font-size: .85rem;
+        font-weight: 400;
       }
-
-      button:hover {
-        background: var(--accent-hover);
-      }
-
-      button:focus-visible,
-      .search-link:focus-visible {
-        outline: 3px solid rgb(189 8 28 / 0.24);
-        outline-offset: 3px;
-      }
-
-      .hint,
-      .status,
-      footer {
-        color: var(--muted);
-        font-size: 0.8125rem;
-        line-height: 1.55;
-      }
-
-      .error {
-        margin: 0.875rem 0 0;
-        color: var(--error);
-        font-size: 0.875rem;
-        font-weight: 650;
-      }
-
-      .result {
-        margin-top: 1.5rem;
-        padding-top: 1.5rem;
-        border-top: 1px solid var(--border);
-      }
-
-      .result h2 {
-        margin: 0 0 0.5rem;
-        font-size: 1rem;
-      }
-
-      .result-query {
-        margin: 0 0 1rem;
-        overflow-wrap: anywhere;
-        color: var(--muted);
-      }
-
-      .search-link {
-        width: fit-content;
-        color: #ffffff;
-        background: var(--text);
-      }
-
-      .search-link:hover {
-        background: #303030;
-      }
-
-      .status {
-        margin: 1.5rem 0 0;
-      }
-
-      .status::before {
-        content: "";
-        display: inline-block;
-        width: 0.5rem;
-        height: 0.5rem;
-        margin-right: 0.45rem;
-        border-radius: 999px;
-        background: currentColor;
-        vertical-align: 0.08rem;
-      }
-
-      .status[data-state="ready"] {
-        color: var(--success);
-      }
-
-      .status[data-state="unavailable"] {
-        color: var(--warning);
-      }
-
-      .status[data-state="error"] {
-        color: var(--error);
-      }
-
-      footer {
-        margin-top: 1rem;
-        text-align: center;
-      }
-
-      [hidden] {
-        display: none !important;
-      }
-
+      .error, .status[data-state="error"] { color: #a11724; }
+      .result { margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #deded9; }
+      .result h2 { margin: 0; font-size: 1rem; }
+      .result-query { margin: .5rem 0 1rem; }
+      .search-link { display: inline-block; background: #171717; }
+      details { margin-top: 1.5rem; }
+      summary { cursor: pointer; }
+      .status[data-state="ready"] { color: #176b3a; }
+      footer { margin-top: 1rem; text-align: center; }
+      [hidden] { display: none !important; }
       @media (max-width: 34rem) {
-        .controls {
-          grid-template-columns: 1fr;
-        }
-
-        button,
-        .search-link {
-          width: 100%;
-        }
+        .controls { grid-template-columns: 1fr; }
+        .search-link { width: 100%; }
       }
     </style>
   </head>
@@ -231,31 +100,35 @@
       <section class="shell" aria-labelledby="page-title">
         <h1 id="page-title">Pinterest Idea Search</h1>
         <p class="intro">
-          Prepare a focused Pinterest search from one idea. The human form and
-          the page's WebMCP tool use exactly the same search logic.
+          探したい雰囲気を、ひとことから。検索リンクを作り、Pinterestで画像のアイデアを探せます。
         </p>
 
         <form id="search-form" novalidate>
-          <label for="query">Idea or visual concept</label>
+          <label for="query">どんなアイデアを探しますか？</label>
           <div class="controls">
             <input
               id="query"
               type="text"
               inputmode="search"
               autocomplete="off"
-              placeholder="underwater bride prism lighting"
+              placeholder="例：水中の花嫁 プリズムの光"
               aria-describedby="query-hint error"
               required
             />
-            <button type="submit">Prepare search</button>
+            <button type="submit">検索リンクを作る</button>
           </div>
-          <span id="query-hint" class="hint">1–200 characters.</span>
+          <span id="query-hint" class="hint">日本語・英語で入力できます（1〜200文字）。</span>
+          <div class="examples" aria-label="検索の例">
+            <button type="button" data-query="小さな部屋 北欧インテリア">北欧の部屋</button>
+            <button type="button" data-query="水中 ポートレート プリズム 光">幻想的な写真</button>
+            <button type="button" data-query="秋 コーデ ベージュ">秋のコーデ</button>
+          </div>
         </form>
 
         <p id="error" class="error" role="alert" hidden></p>
 
         <section id="result-panel" class="result" aria-live="polite" hidden>
-          <h2>Prepared search</h2>
+          <h2>Pinterestで探す準備ができました</h2>
           <p id="result-query" class="result-query"></p>
           <a
             id="search-link"
@@ -264,17 +137,20 @@
             rel="noopener noreferrer"
             hidden
           >
-            Open search on Pinterest
+            Pinterestで画像を見る ↗
           </a>
         </section>
 
+        <details>
+          <summary class="hint">AIからこのサイトを使う</summary>
+          <p class="hint">対応するChatGPT・Codexのブラウザで「このサイトで水中の写真の検索を準備して」と頼めます。</p>
         <p id="webmcp-status" class="status" data-state="checking" aria-live="polite">
           Checking WebMCP support…
-        </p>
+        </p></details>
       </section>
 
       <footer>
-        Unofficial demonstration. Not affiliated with or endorsed by Pinterest.
+        Pinterestとは提携していない非公式ツールです。画像はPinterestで表示されます。
       </footer>
     </main>
 
